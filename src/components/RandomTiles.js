@@ -7,6 +7,7 @@ class RandomTiles extends Component {
 			letterArray: []
 		})
 	}
+
 	dice = () => {
 		return [
 			['R', 'I', 'F', 'O', 'B', 'X'],
@@ -34,7 +35,6 @@ class RandomTiles extends Component {
 				return die[randomNumber]
 		});
 
-		console.log(diceRoll)
 		const letterArray = diceRoll.map((letter, i) => diceRoll[i])
 
 		this.setState({ letterArray }) 

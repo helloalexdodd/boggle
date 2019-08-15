@@ -5,7 +5,7 @@ class Api extends Component {
 	constructor() {
 		super()
 		this.state = ({
-			searchResult: ""
+			searchResults: []
 		})
 	}
 	
@@ -21,9 +21,8 @@ class Api extends Component {
 					text: this.props.userSearch
 				}
 			}).then(results => {
-				const searchResult = results.data.def[0].text
-				this.setState({ searchResult })
-				console.log(this.state.searchResult)
+				const searchResults = results.data.def[0].text
+				this.setState({searchResults})
 			})
 		}
 		this.getInfo()
