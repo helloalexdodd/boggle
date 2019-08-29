@@ -18,7 +18,7 @@ class RandomTiles extends Component {
 			['L', 'U', 'P', 'E', 'T', 'S'],
 			['A', 'C', 'I', 'T', 'O', 'A'],
 			['Y', 'L', 'G', 'K', 'U', 'E'],
-			['Qu', 'B', 'M', 'J', 'O', 'A'],
+			['Y', 'B', 'M', 'J', 'O', 'A'],
 			['E', 'H', 'I', 'S', 'P', 'N'],
 			['V', 'E', 'T', 'I', 'G', 'N'],
 			['B', 'A', 'L', 'I', 'Y', 'T'],
@@ -34,10 +34,9 @@ class RandomTiles extends Component {
 				const randomNumber = Math.floor(Math.random() * die.length);
 				return die[randomNumber]
 		});
-
 		const letterArray = diceRoll.map((letter, i) => diceRoll[i])
-
-		this.setState({ letterArray }) 
+		this.setState({letterArray})
+		this.props.storeTile(letterArray) 
 	};
 
 	componentDidMount() {
