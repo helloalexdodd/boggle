@@ -1,8 +1,4 @@
-# 2048
-
-### Live Link
-
-https://helloalexdodd.github.io/boggle/
+# Boggle
 
 In order to run this project locally, it requires your own API key and ID, obtained from the [Oxford Dictionary API](https://developer.oxforddictionaries.com/).
 
