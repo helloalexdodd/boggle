@@ -1,109 +1,120 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { PROXY_URL, DICTIONARY_URL, API_KEY, API_ID } from './constants/dictionary_api';
+import { setTimeout } from 'timers';
+
+import styled from 'styled-components';
+import { GlobalStyle, Wrapper } from './GlobalStyles';
+
 import Header from './components/Header';
 import RandomTiles from './components/RandomTiles';
 import Form from './components/Form';
-import './App.css';
-import { setTimeout } from 'timers';
+import GuessList from './components/GuessList';
+import WinnerMessage from './components/WinnerMessage';
+
+export const Board = styled.div`
+	display: flex;
+	justify-content: space-between;
+	margin-top: 50px;
+`;
+
+export const FormContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+`;
 
 class App extends Component {
 	constructor() {
 		super();
 		this.state = ({
-			apiKey: `4dd7b3f8709dad9290faeddfd970a38b`,
-			userInput: ``,
+			userInput: '',
 			userGuesses: [],
 			searchResults: [],
 			correctGuesses: [],
 			incorrectGuesses: [],
-			submitted: false
+			submitted: false,
+			wordResult: ''
 		});
 	};
 
-	getInfo = (word) => {
-		const proxy = `https://cors-anywhere.herokuapp.com/`;
-		const dictionaryURL = `https://od-api.oxforddictionaries.com/api/v2/entries/en-gb/${word}?strictMatch=false`;
-		const apiId = `a332ce62`;
-		const apiKey = `4dd7b3f8709dad9290faeddfd970a38b`;
-		axios.get(`${proxy}${dictionaryURL}`, {
-			dataResponse: `json`,
-			headers: {
-				"Accept": 'application/json',
-				"app_id": apiId,
-				"app_key": apiKey
-			}
-		}).then(results => {
-			const result = results.data.id;
-			const checkedTiles = this.checkTiles(result);
-			this.handleGuesses(checkedTiles, result)
-		});
-	};
+	storeTiles = letterArray => this.setState({ letterArray });
 
-	handleChange = e => {
-		this.setState({
-			userInput: e.target.value
-		});
-	};
+	handleChange = e => this.setState({ userInput: e.target.value });
 
 	handleSubmit = e => {
 		e.preventDefault();
-		const userInput = "";
-		this.setState({ userInput });
-		const lowerCaseInput = this.state.userInput.toLowerCase().toString();
-		const userGuesses = this.state.userGuesses;
-		userGuesses.push(lowerCaseInput);
-		this.setState({ userGuesses });
+		if (!this.state.submitted && this.state.userInput) {
+			const userInput = "";
+			this.setState({ userInput });
+			
+			const lowerCaseInput = this.state.userInput.toLowerCase().toString();
+			const userGuesses = this.state.userGuesses;
+			userGuesses.push(lowerCaseInput);
+			this.setState({ userGuesses });	
+		}
 	};
-
+	
 	handleFinish = e => {
 		e.preventDefault();
-		this.state.userGuesses.forEach(guess => {
-			this.getInfo(guess);
-		});
-		if (this.state.userGuesses) {
-			setTimeout(() => {
-				this.setState({ submitted: true })
-			}, 5000);
-		};
+		if (!this.state.submitted) {
+			this.state.userGuesses.forEach(guess => {
+				this.getInfo(guess)
+			});
+			if (this.state.userGuesses) {
+				setTimeout(() => {
+					this.setState({ submitted: true })
+				}, 5000);
+			};	
+		}
 	};
 
-	storeTiles = (letterArray) => {
-		this.setState({ letterArray });
+	async getInfo(word) {
+		await axios.get(`${PROXY_URL}${DICTIONARY_URL(word)}`, {
+			dataResponse: 'json',
+			headers: {
+				'Accept': 'application/json',
+				'app_id': API_ID,
+				'app_key': API_KEY
+			}
+		}).then(res => {
+			const result = res.data.id;
+			const checkedTiles = this.checkTiles(result);
+			this.handleGuesses(checkedTiles, result);
+		}, err => {
+			this.handleGuesses(err, word)
+		});
 	};
 
 	checkTiles = (word) => {
 		const letters = word.toUpperCase().split("");
-		return letters.map(letter => {
-			return this.state.letterArray.includes(letter);
-		});
+		return letters.map(letter => this.state.letterArray.includes(letter));
 	};
 
-	handleGuesses = (guessCheck, result) => {
-		let correctGuesses = this.state.correctGuesses;
-		let incorrectGuesses = this.state.incorrectGuesses;
-		if (typeof (result) === `string`) {
-			if (!guessCheck.includes(false)) {
-				correctGuesses.push(result);
-				this.setState({ correctGuesses });
-			} else {
-				incorrectGuesses.push(result)
-				console.log(incorrectGuesses)
-				this.setState({ incorrectGuesses });
+	handleGuesses = (checkedTiles, word) => {
+		if (Array.isArray(checkedTiles) && typeof word === 'string') {
+			if (!checkedTiles.includes(false)) {
+				const guess = this.state.correctGuesses;
+				guess.push(word);
+				this.setState({ correctGuesses: guess });
 			}
-		};
+		} else {
+			const guess = this.state.incorrectGuesses;
+			guess.push(word);
+			this.setState({ incorrectGuesses: guess });
+		}
 	};
 
 	render() {
 		return(
 			<>
+				<GlobalStyle />
 				<Header />
 				<main>
-					<div className="wrapper">
-						<div className="board">
-							<div className="board-container inner-container">
-								<RandomTiles storeTile={this.storeTiles} />
-							</div>
-							<div className="form-container inner-container">
+					<Wrapper>
+						<Board>
+							<RandomTiles storeTile={this.storeTiles} />
+							<FormContainer>
 								<Form
 									onChange={this.handleChange}
 									handleSubmit={this.handleSubmit}
@@ -111,38 +122,20 @@ class App extends Component {
 									value={this.state.userInput}
 									searchResults={this.state.searchResults}
 								/>
-								<ul>
-								{	(!this.state.correctGuesses.length && !this.state.submitted) || (this.state.submitted && !this.state.userGuesses.length) ?
-										
-									this.state.userGuesses.map((letter, i) => {
-									return <li key={i}>{this.state.userGuesses[i]}</li>}) :
-									
-									this.state.correctGuesses.map((letter, i) => {
-										return <li key={i} className={`correct-guess`}>{this.state.correctGuesses[i]}</li>
-									})
-								}
-								</ul>
-								<ul>
-									{(this.state.incorrectGuesses.length && this.state.submitted) ?
-
-										this.state.incorrectGuesses.map((letter, i) => {
-											return <li key={i} className={`incorrect-guess`}>{this.state.incorrectGuesses[i]}</li>
-										}) :
-
-										null
-								}
-								</ul>
-								{ this.state.correctGuesses.length ?
-									<p>Congratulations, you got {this.state.correctGuesses.length} right and {this.state.incorrectGuesses.length} wrong!</p> :
-									null
-								}
-								{	this.state.submitted && !this.state.correctGuesses.length ?
-									<p>Sorry, you didn't get any right guesses!</p> :
-									null
-								}
-							</div>
-						</div>
-					</div>
+								<GuessList
+									userGuesses={this.state.userGuesses}
+									correctGuesses={this.state.correctGuesses}
+									incorrectGuesses={this.state.incorrectGuesses} 
+									submitted={this.state.submitted}
+								/>
+								<WinnerMessage
+									correctGuesses={this.state.correctGuesses}
+									incorrectGuesses={this.state.incorrectGuesses}
+									submitted={this.state.submitted}
+								/>
+							</FormContainer>
+						</Board>
+					</Wrapper>
 				</main>
 			</>
 		);

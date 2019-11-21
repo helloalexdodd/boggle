@@ -1,17 +1,40 @@
 import React from 'react';
+import styled from 'styled-components';
 
-function Form(props) {
+const StyledForm = styled.form`
+	text-align: center;
+`;
+
+export const ButtonContainer = styled.div`
+	display: flex;
+`;
+
+const Label = styled.label`
+	margin: 20px;
+	padding: 7px;
+	border: none;
+`;
+
+const Input = styled.input`
+	margin: 20px;
+	padding: 7px;
+	border: none;
+	width: 50%;
+	box-shadow: -2px 2px black;	
+`;
+
+const Form = props => {
 	return (
-		<form action="">
-			<div className="input-container">
-				<label htmlFor="wordGuess">Submit a Word:</label>
-				<input type="text" id="wordGuess" value={props.value} onChange={(e)=> props.onChange(e)} />
+		<StyledForm>
+			<div>
+				<Label htmlFor="wordGuess">Submit a Word:</Label>
+				<Input type="text" id="wordGuess" value={props.value} onChange={e => props.onChange(e)} />
 			</div>
-			<div className="button-container">
-				<input type="submit" value="Submit A Word" onClick={(e)=> props.handleSubmit(e)} />			
-				<input type="button" value="Finish Turn" onClick={(e)=> props.handleFinish(e)}/>
-			</div>
-		</form>
+			<ButtonContainer>
+				<Input type="submit" value="Submit A Word" onClick={e => props.handleSubmit(e)} />			
+				<Input type="button" value="Finish Turn" onClick={e => props.handleFinish(e)}/>
+			</ButtonContainer>
+		</StyledForm>
 	)
 }
 

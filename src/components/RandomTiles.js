@@ -1,4 +1,31 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
+
+const GameBoard = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	background-color: #398bd4;
+	width: 100%;
+	height: 600px;
+	margin: 0 50px 30px;
+	border: 5px solid #464655;
+	border-radius: 10px;
+	box-shadow: -4px 4px 1px black;
+`;
+
+const Letter = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #accecc;
+	width: calc(25% - 20px);
+	height: calc(25% - 20px);
+	margin: 10px;
+	padding: 10px;
+	border-radius: 10px;
+	font-size: 3.5rem;
+`;
 
 class RandomTiles extends Component {
 	constructor() {
@@ -35,21 +62,19 @@ class RandomTiles extends Component {
 				return die[randomNumber]
 		});
 		const letterArray = diceRoll.map((letter, i) => diceRoll[i])
-		this.setState({letterArray})
-		this.props.storeTile(letterArray) 
+		this.setState({ letterArray })
+		this.props.storeTile(letterArray);
 	};
 
 	componentDidMount() {
 		this.randomLetter();
-	}
+	};
 
 	render() {
 		return (
-			<div className="game-board">
-				{this.state.letterArray.map((letter, i) => {
-					return <div key={i}>{this.state.letterArray[i]}</div>
-				})}
-			</div>
+			<GameBoard>
+				{this.state.letterArray.map((letter, i) => <Letter key={i}>{this.state.letterArray[i]}</Letter>)}
+			</GameBoard>
 		);
 	};
 };

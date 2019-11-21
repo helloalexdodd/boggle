@@ -1,18 +1,33 @@
 import React from 'react';
+import styled from 'styled-components';
 import logo from './../images/logo.png';
+import { Wrapper } from '../GlobalStyles.js';
 
-function Header() {
+const StyledHeader = styled.header`
+	width: 70%;
+	margin: 0 auto;
 
-	return(
-		<header>
-			<div className="wrapper">
+	h1 img {
+		height: 150px;
+	}
+
+	p:nth-of-type(2) {
+		margin: 10px;
+		font-size: 2rem;	
+	}
+`;
+
+const Header = () => {
+	return (
+		<StyledHeader>
+			<Wrapper>
 				<h1>
-					<img src={logo} alt="Boggle Logo"/>
+					<img src={logo} alt="Boggle Logo" />
 				</h1>
-				<p>The goal of Snoggle is to find as many words as you can in the letters on the game board. Type them out and hit enter one at a time until you've found all you can. The more words the better!</p>
+				<p>The goal of Boggle is to find as many words as you can in the letters on the game board. Type them out and hit enter one at a time until you've found all you can. The more words the better!</p>
 				<p>Good luck!</p>
-			</div>
-		</header>
+			</Wrapper>
+		</StyledHeader>
 	)
 }
 
