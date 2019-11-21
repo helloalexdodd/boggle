@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { PROXY_URL, DICTIONARY_URL, API_KEY, API_ID } from './constants/dictionary_api';
+import { PROXY_URL, DICTIONARY_URL } from './constants/dictionary_api';
 import { setTimeout } from 'timers';
 
 import styled from 'styled-components';
@@ -70,15 +70,15 @@ class App extends Component {
 	};
 
 	async getInfo(word) {
-		console.log(process.env.REACT_APP_API_KEY);
-		console.log(API_KEY);
+		const apiKey = process.env.REACT_APP_API_KEY;
+		const apiId = process.env.REACT_APP_API_ID;
 		
 		await axios.get(`${PROXY_URL}${DICTIONARY_URL(word)}`, {
 			dataResponse: 'json',
 			headers: {
 				'Accept': 'application/json',
-				'app_id': API_ID,
-				'app_key': API_KEY
+				'app_id': apiId,
+				'app_key': apiKey
 			}
 		}).then(res => {
 			const result = res.data.id;
