@@ -72,7 +72,7 @@ class App extends Component {
 	async getInfo(word) {
 		const apiKey = process.env.REACT_APP_API_KEY;
 		const apiId = process.env.REACT_APP_API_ID;
-		
+
 		await axios.get(`${PROXY_URL}${DICTIONARY_URL(word)}`, {
 			dataResponse: 'json',
 			headers: {
@@ -81,10 +81,12 @@ class App extends Component {
 				'app_key': apiKey
 			}
 		}).then(res => {
+			console.log(res.data)
 			const result = res.data.id;
 			const checkedTiles = this.checkTiles(result);
 			this.handleGuesses(checkedTiles, result);
 		}, err => {
+			console.log(err)
 			this.handleGuesses(err, word)
 		});
 	};
@@ -95,17 +97,21 @@ class App extends Component {
 	};
 
 	handleGuesses = (checkedTiles, word) => {
+		console.log(checkedTiles, word)
 		if (Array.isArray(checkedTiles) && typeof word === 'string') {
 			if (!checkedTiles.includes(false)) {
 				const guess = this.state.correctGuesses;
 				guess.push(word);
 				this.setState({ correctGuesses: guess });
+			} else {
+				console.log(checkedTiles, word)
+				const guess = this.state.incorrectGuesses;
+				console.log(guess)
+				guess.push(word);
+				console.log(guess)
+				this.setState({ incorrectGuesses: guess });
 			}
-		} else {
-			const guess = this.state.incorrectGuesses;
-			guess.push(word);
-			this.setState({ incorrectGuesses: guess });
-		}
+		} 
 	};
 
 	render() {
