@@ -98,20 +98,15 @@ class App extends Component {
 
 	handleGuesses = (checkedTiles, word) => {
 		console.log(checkedTiles, word)
-		if (Array.isArray(checkedTiles) && typeof word === 'string') {
-			if (!checkedTiles.includes(false)) {
-				const guess = this.state.correctGuesses;
-				guess.push(word);
-				this.setState({ correctGuesses: guess });
-			} else {
-				console.log(checkedTiles, word)
-				const guess = this.state.incorrectGuesses;
-				console.log(guess)
-				guess.push(word);
-				console.log(guess)
-				this.setState({ incorrectGuesses: guess });
-			}
-		} 
+		if (Array.isArray(checkedTiles) && !checkedTiles.includes(false) && typeof word === 'string') {
+			const guess = this.state.correctGuesses;
+			guess.push(word);
+			this.setState({ correctGuesses: guess });
+		} else {
+			const guess = this.state.incorrectGuesses;
+			guess.push(word);
+			this.setState({ incorrectGuesses: guess });
+		}
 	};
 
 	render() {
