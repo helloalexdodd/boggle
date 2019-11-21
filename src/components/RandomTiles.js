@@ -59,6 +59,7 @@ const RandomTiles = props => {
 	};
 
 	useEffect(() => {
+		console.log(props)
 		randomLetter();
 	}, []);
 

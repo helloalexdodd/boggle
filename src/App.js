@@ -92,7 +92,7 @@ class App extends Component {
 		});
 	};
 
-	checkTiles = (word) => {
+	checkTiles = word => {
 		const letters = word.toUpperCase().split("");
 		return letters.map(letter => this.state.letterArray.includes(letter));
 	};
