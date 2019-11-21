@@ -87,7 +87,6 @@ class App extends Component {
 			const checkedTiles = this.checkTiles(result);
 			this.handleGuesses(checkedTiles, result);
 		}, err => {
-			console.log(err)
 			this.handleGuesses(err, word)
 		});
 	};
@@ -98,7 +97,6 @@ class App extends Component {
 	};
 
 	handleGuesses = (checkedTiles, word) => {
-		console.log(checkedTiles, word)
 		if (Array.isArray(checkedTiles) && !checkedTiles.includes(false) && typeof word === 'string') {
 			const guess = this.state.correctGuesses;
 			guess.push(word);
