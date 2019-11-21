@@ -1,3 +1,11 @@
+# 2048
+
+### Live Link
+
+https://helloalexdodd.github.io/boggle/
+
+In order to run this project locally, it requires your own API key and ID, obtained from the [Oxford Dictionary API](https://developer.oxforddictionaries.com/).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
