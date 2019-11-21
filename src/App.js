@@ -15,19 +15,21 @@ import WinnerMessage from './components/WinnerMessage';
 export const Board = styled.div`
 	display: flex;
 	justify-content: space-between;
-	margin-top: 50px;
+	margin-top: 30px;
 `;
 
 export const FormContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	margin-top: 0;
 `;
 
 class App extends Component {
 	constructor() {
 		super();
 		this.state = ({
+			letterArray: [],
 			userInput: '',
 			userGuesses: [],
 			searchResults: [],
@@ -81,7 +83,6 @@ class App extends Component {
 				'app_key': apiKey
 			}
 		}).then(res => {
-			console.log(res.data)
 			const result = res.data.id;
 			const checkedTiles = this.checkTiles(result);
 			this.handleGuesses(checkedTiles, result);
@@ -117,7 +118,10 @@ class App extends Component {
 				<main>
 					<Wrapper>
 						<Board>
-							<RandomTiles storeTile={this.storeTiles} />
+							<RandomTiles
+								storeTiles={this.storeTiles} 
+								letterArray={this.state.letterArray}
+							/>
 							<FormContainer>
 								<Form
 									onChange={this.handleChange}

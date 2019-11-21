@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 const GameBoard = styled.div`
@@ -6,7 +6,7 @@ const GameBoard = styled.div`
 	flex-wrap: wrap;
 	justify-content: center;
 	background-color: #398bd4;
-	width: 100%;
+	width: 600px;
 	height: 600px;
 	margin: 0 50px 30px;
 	border: 5px solid #464655;
@@ -27,15 +27,8 @@ const Letter = styled.div`
 	font-size: 3.5rem;
 `;
 
-class RandomTiles extends Component {
-	constructor() {
-		super()
-		this.state = ({
-			letterArray: []
-		})
-	}
-
-	dice = () => {
+const RandomTiles = props => {
+	const dice = () => {
 		return [
 			['R', 'I', 'F', 'O', 'B', 'X'],
 			['I', 'F', 'E', 'H', 'E', 'Y'],
@@ -56,27 +49,24 @@ class RandomTiles extends Component {
 		];
 	}
 
-	randomLetter = () => {
-		const diceRoll = this.dice().map(die => {
+	const randomLetter = () => {
+		const diceRoll = dice().map(die => {
 				const randomNumber = Math.floor(Math.random() * die.length);
 				return die[randomNumber]
 		});
 		const letterArray = diceRoll.map((letter, i) => diceRoll[i])
-		this.setState({ letterArray })
-		this.props.storeTile(letterArray);
+		props.storeTiles(letterArray);
 	};
 
-	componentDidMount() {
-		this.randomLetter();
-	};
+	useEffect(() => {
+		randomLetter();
+	}, []);
 
-	render() {
-		return (
-			<GameBoard>
-				{this.state.letterArray.map((letter, i) => <Letter key={i}>{this.state.letterArray[i]}</Letter>)}
-			</GameBoard>
-		);
-	};
+	return (
+		<GameBoard>
+			{props.letterArray.map((letter, i) => <Letter key={i}>{props.letterArray[i]}</Letter>)}
+		</GameBoard>
+	);
 };
 
 export default RandomTiles;

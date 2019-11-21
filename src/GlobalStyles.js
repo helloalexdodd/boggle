@@ -25,7 +25,7 @@ export const GlobalStyle = createGlobalStyle`
 
 export const Wrapper = styled.div`
 	max-width: 1080px;
-	width: 90%;
+	width: 70%;
 	margin: 0 auto;
 	display: flex;
 	flex-direction: column;

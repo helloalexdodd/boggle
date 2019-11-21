@@ -8,12 +8,17 @@ const StyledHeader = styled.header`
 	margin: 0 auto;
 
 	h1 img {
-		height: 150px;
+		height: 100px;
+	}
+
+	p {
+		margin: 0;
+		font-size: 0.8rem;
 	}
 
 	p:nth-of-type(2) {
 		margin: 10px;
-		font-size: 2rem;	
+		font-size: 1.6rem;	
 	}
 `;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WinnerMessage = (props) => {
+const WinnerMessage = props => {
   return (
     <div>
       {
