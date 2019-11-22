@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { PROXY_URL, DICTIONARY_URL } from './constants/dictionary_api';
-import { setTimeout } from 'timers';
 
 import styled from 'styled-components';
 import { GlobalStyle, Wrapper } from './GlobalStyles';
@@ -25,7 +24,7 @@ export const FormContainer = styled.div`
 	margin-top: 0;
 `;
 
-function App() {
+const App = () => {
   const [letterArray, setLetterArray] = useState([]);
   const [userInput, setUserInput] =  useState('');
   const [userGuesses, setUserGuesses] = useState([]);
@@ -48,19 +47,23 @@ function App() {
       setUserInput(newUserInput);
 		}
   };
+
+  async function asyncForEach(arr, callback) {
+    for (let i = 0; i < arr.length; i++) {
+      await callback(arr[i], i, arr);
+    }
+  }
   
-  const handleFinish = e => {
+  const checkDictionary = async () => {
+    await asyncForEach(userGuesses, async(guess) => {
+      await getInfo(guess);
+    });
+    setSubmitted(true);
+  };
+
+  const handleFinish = async function(e) {
 		e.preventDefault();
-		if (!submitted) {
-			userGuesses.forEach(guess => {
-				getInfo(guess)
-			});
-			if (userGuesses) {
-				setTimeout(() => {
-          setSubmitted(true)
-				}, 1500);
-			};	
-		}
+		if (!submitted) checkDictionary(e);
   };
   
   const getInfo  = async function(word) {
@@ -89,7 +92,11 @@ function App() {
   };
   
   const handleGuesses = (checkedTiles, word) => {
-		if (Array.isArray(checkedTiles) && !checkedTiles.includes(false) && typeof word === 'string') {
+    const isArray = Array.isArray(checkedTiles);
+    const hasMatchingLetters = () => !checkedTiles.includes(false);
+    const returnsString = typeof word === 'string';
+
+    if (isArray && hasMatchingLetters() && returnsString) {
       const newGuess = correctGuesses;
       newGuess.push(word)
       setCorrectGuesses(newGuess)
