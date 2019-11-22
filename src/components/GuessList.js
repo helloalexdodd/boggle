@@ -29,19 +29,21 @@ const Guesses = styled.ul`
 `;
 
 const GuessList = props => {
+  const {userGuesses, correctGuesses, incorrectGuesses, submitted } = props;
+
   return (
     <>
       <Guesses>
         {
-          (!props.correctGuesses.length && !props.submitted) || (props.submitted && !props.userGuesses.length) ?
-          props.userGuesses.map((guess, i) => <li key={i}>{props.userGuesses[i]}</li>) : 
-          props.correctGuesses.map((guess, i) => <li key={i} className={`correct-guess`}>{props.correctGuesses[i]}</li>)
+          (!correctGuesses.length && !submitted) || (submitted && !userGuesses.length) ?
+          userGuesses.map((guess, i) => <li key={i}>{userGuesses[i]}</li>) : 
+          correctGuesses.map((guess, i) => <li key={i} className={`correct-guess`}>{correctGuesses[i]}</li>)
         }
       </Guesses>
       <Guesses>
         {
-          (props.incorrectGuesses.length && props.submitted) ?
-          props.incorrectGuesses.map((guess, i) => <li key={i} className={`incorrect-guess`}>{props.incorrectGuesses[i]}</li>) :
+          (incorrectGuesses.length && submitted) ?
+          incorrectGuesses.map((guess, i) => <li key={i} className={`incorrect-guess`}>{incorrectGuesses[i]}</li>) :
           null
         }
       </Guesses>

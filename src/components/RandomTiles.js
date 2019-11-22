@@ -49,23 +49,23 @@ const RandomTiles = props => {
 		];
 	}
 
-	const randomLetter = () => {
-		const diceRoll = dice().map(die => {
-				const randomNumber = Math.floor(Math.random() * die.length);
-				return die[randomNumber]
-		});
-		const letterArray = diceRoll.map((letter, i) => diceRoll[i])
-		props.storeTiles(letterArray);
-	};
+	const { storeTiles, letterArray } = props;
 
 	useEffect(() => {
-		console.log(props)
+		const randomLetter = () => {
+			const diceRoll = dice().map(die => {
+					const randomNumber = Math.floor(Math.random() * die.length);
+					return die[randomNumber]
+			});
+			const letterArray = diceRoll.map((letter, i) => diceRoll[i])
+			storeTiles(letterArray);
+		};
 		randomLetter();
 	}, []);
 
 	return (
 		<GameBoard>
-			{props.letterArray.map((letter, i) => <Letter key={i}>{props.letterArray[i]}</Letter>)}
+			{letterArray.map((letter, i) => <Letter key={i}>{letterArray[i]}</Letter>)}
 		</GameBoard>
 	);
 };

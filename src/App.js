@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { PROXY_URL, DICTIONARY_URL } from './constants/dictionary_api';
 import { setTimeout } from 'timers';
@@ -25,53 +25,45 @@ export const FormContainer = styled.div`
 	margin-top: 0;
 `;
 
-class App extends Component {
-	constructor() {
-		super();
-		this.state = ({
-			letterArray: [],
-			userInput: '',
-			userGuesses: [],
-			searchResults: [],
-			correctGuesses: [],
-			incorrectGuesses: [],
-			submitted: false,
-			wordResult: ''
-		});
-	};
-
-	storeTiles = letterArray => this.setState({ letterArray });
-
-	handleChange = e => this.setState({ userInput: e.target.value });
-
-	handleSubmit = e => {
-		e.preventDefault();
-		if (!this.state.submitted && this.state.userInput) {
-			const userInput = "";
-			this.setState({ userInput });
-			
-			const lowerCaseInput = this.state.userInput.toLowerCase().toString();
-			const userGuesses = this.state.userGuesses;
-			userGuesses.push(lowerCaseInput);
-			this.setState({ userGuesses });	
+function App() {
+  const [letterArray, setLetterArray] = useState([]);
+  const [userInput, setUserInput] =  useState('');
+  const [userGuesses, setUserGuesses] = useState([]);
+  const [correctGuesses, setCorrectGuesses] = useState([]);
+  const [incorrectGuesses, setIncorrectGuesses] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+  
+  const storeTiles = letterArray => setLetterArray(letterArray);
+  
+	const handleChange = e => setUserInput(e.target.value);
+  
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!submitted && userInput) {
+			const lowerCaseInput = userInput.toLowerCase().toString();
+			const newUserGuesses = [...userGuesses];
+      newUserGuesses.push(lowerCaseInput);
+      setUserGuesses(newUserGuesses);
+      const newUserInput = "";
+      setUserInput(newUserInput);
 		}
-	};
-	
-	handleFinish = e => {
+  };
+  
+  const handleFinish = e => {
 		e.preventDefault();
-		if (!this.state.submitted) {
-			this.state.userGuesses.forEach(guess => {
-				this.getInfo(guess)
+		if (!submitted) {
+			userGuesses.forEach(guess => {
+				getInfo(guess)
 			});
-			if (this.state.userGuesses) {
+			if (userGuesses) {
 				setTimeout(() => {
-					this.setState({ submitted: true })
-				}, 5000);
+          setSubmitted(true)
+				}, 1500);
 			};	
 		}
-	};
-
-	async getInfo(word) {
+  };
+  
+  const getInfo  = async function(word) {
 		const apiKey = process.env.REACT_APP_API_KEY;
 		const apiId = process.env.REACT_APP_API_ID;
 
@@ -84,68 +76,65 @@ class App extends Component {
 			}
 		}).then(res => {
 			const result = res.data.id;
-			const checkedTiles = this.checkTiles(result);
-			this.handleGuesses(checkedTiles, result);
+			const checkedTiles = checkTiles(result);
+			handleGuesses(checkedTiles, result);
 		}, err => {
-			this.handleGuesses(err, word)
+			handleGuesses(err, word)
 		});
-	};
-
-	checkTiles = word => {
+  };
+  
+  const checkTiles = word => {
 		const letters = word.toUpperCase().split("");
-		return letters.map(letter => this.state.letterArray.includes(letter));
-	};
-
-	handleGuesses = (checkedTiles, word) => {
+		return letters.map(letter => letterArray.includes(letter));
+  };
+  
+  const handleGuesses = (checkedTiles, word) => {
 		if (Array.isArray(checkedTiles) && !checkedTiles.includes(false) && typeof word === 'string') {
-			const guess = this.state.correctGuesses;
-			guess.push(word);
-			this.setState({ correctGuesses: guess });
+      const newGuess = correctGuesses;
+      newGuess.push(word)
+      setCorrectGuesses(newGuess)
 		} else {
-			const guess = this.state.incorrectGuesses;
-			guess.push(word);
-			this.setState({ incorrectGuesses: guess });
+			const newGuess = incorrectGuesses;
+      newGuess.push(word);
+      setIncorrectGuesses(newGuess);
 		}
 	};
 
-	render() {
-		return(
-			<>
-				<GlobalStyle />
-				<Header />
-				<main>
-					<Wrapper>
-						<Board>
-							<RandomTiles
-								storeTiles={this.storeTiles} 
-								letterArray={this.state.letterArray}
-							/>
-							<FormContainer>
-								<Form
-									onChange={this.handleChange}
-									handleSubmit={this.handleSubmit}
-									handleFinish={this.handleFinish}
-									value={this.state.userInput}
-									searchResults={this.state.searchResults}
-								/>
-								<GuessList
-									userGuesses={this.state.userGuesses}
-									correctGuesses={this.state.correctGuesses}
-									incorrectGuesses={this.state.incorrectGuesses} 
-									submitted={this.state.submitted}
-								/>
-								<WinnerMessage
-									correctGuesses={this.state.correctGuesses}
-									incorrectGuesses={this.state.incorrectGuesses}
-									submitted={this.state.submitted}
-								/>
-							</FormContainer>
-						</Board>
-					</Wrapper>
-				</main>
-			</>
-		);
-	};
+  return(
+    <>
+      <GlobalStyle />
+      <Header />
+      <main>
+        <Wrapper>
+          <Board>
+            <RandomTiles
+              storeTiles={storeTiles} 
+              letterArray={letterArray}
+            />
+            <FormContainer>
+              <Form
+                onChange={handleChange}
+                handleSubmit={handleSubmit}
+                handleFinish={handleFinish}
+                value={userInput}
+              />
+              <GuessList
+                userGuesses={userGuesses}
+                correctGuesses={correctGuesses}
+                incorrectGuesses={incorrectGuesses} 
+                submitted={submitted}
+              />
+              <WinnerMessage
+                correctGuesses={correctGuesses}
+                incorrectGuesses={incorrectGuesses}
+                submitted={submitted}
+              />
+            </FormContainer>
+          </Board>
+        </Wrapper>
+      </main>
+    </>
+  );
 };
 
 export default App;
